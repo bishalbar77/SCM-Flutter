@@ -42,4 +42,18 @@ class JobSheetService {
     })
         .catchError((_) => ApiResponse<Job>(error: true, errorMessage: 'No internet connection found' ));
   }
+
+  Future<ApiResponse<Job>> manageJob(String JobID) {
+    return http.get(API + '/getsinglejobsheet/' + JobID, headers: headers).then((data){
+      if(data.statusCode==200) {
+        final jsonData = json.decode(data.body);
+        for(var item in jsonData)
+        {
+          return ApiResponse<Job>( data: Job.fromJson(item) );
+        }
+      }
+      return ApiResponse<Job>(error: true, errorMessage: 'An error occurred' );
+    })
+        .catchError((_) => ApiResponse<Job>(error: true, errorMessage: 'No internet connection found' ));
+  }
 }

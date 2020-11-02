@@ -73,7 +73,7 @@ class _JobListState extends State<Joblist>
                         context: context,
                         builder: (_) => CloseJobsheet()
                     );
-                    print(result);
+                    // print(result);
                     return(result);
                   },
                   background: Container(

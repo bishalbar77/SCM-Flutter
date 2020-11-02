@@ -19,7 +19,8 @@ class Job {
     print("The data from model is $jsondata");
     return Job(
         ID: "5",
-        jobsheetNumber: jsondata['job_number']
+        jobsheetNumber: jsondata['job_number'],
+        job_status: jsondata['job_status']
     );
   }
 }

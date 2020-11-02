@@ -41,6 +41,7 @@ class _ManageJobsheetState extends State<ManageJobsheet>
       job = response.data;
       print("Response is this $job");
       _titleController.text = job.jobsheetNumber;
+      _statusController.text = job.job_status;
     });
   }
 
@@ -56,21 +57,17 @@ class _ManageJobsheetState extends State<ManageJobsheet>
           children: [
             TextField(
               controller: _titleController,
-              decoration: InputDecoration(
-                  hintText: 'JobSheet Number'
-              ),
-            ),
-            Container(height: 8),
-            TextField(
-              decoration: InputDecoration(
-                  hintText: 'Customer Mobile Number'
+              decoration: InputDecoration(border: OutlineInputBorder(),
+                  hintText: 'JobSheet Number',
+                  labelText: 'JobSheet Number'
               ),
             ),
             Container(height: 8),
             TextField(
               controller: _statusController,
-              decoration: InputDecoration(
-                  hintText: 'Job Status'
+              decoration: InputDecoration(border: OutlineInputBorder(),
+                  hintText: 'Job Status',
+                  labelText: 'Job Status'
               ),
             ),
             Container(height: 18),
