@@ -2,6 +2,11 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
+import 'package:scm/models/Login.dart';
+import 'package:scm/services/JobSheetService.dart';
+
+import 'main.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -9,6 +14,15 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+
+  JobSheetService get service =>  GetIt.I<JobSheetService>();
+
+  Login login = new Login();
+
+
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
   bool _isLoading = false;
   Widget build(BuildContext context) {
     //object
@@ -31,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
 
           crossAxisAlignment: CrossAxisAlignment.start, //position in X-axis
           children: <Widget>[
-            SizedBox(height: 50,), //distance from top
+            SizedBox(height: 10,), //distance from top
             Padding(
               padding: EdgeInsets.all(30),    //padding from everywhere around
               child: Column(
@@ -75,6 +89,7 @@ class _LoginPageState extends State<LoginPage> {
 
                               ),
                               child: TextField(
+                                controller: _emailController,
                                 decoration: InputDecoration(
                                   hintText: "Email address",
                                   hintStyle: TextStyle(color: Colors.grey),
@@ -88,6 +103,7 @@ class _LoginPageState extends State<LoginPage> {
 
                               ),
                               child: TextField(
+                                controller: _passwordController,
                                 decoration: InputDecoration(
                                   hintText: "Password",
                                   hintStyle: TextStyle(color: Colors.grey),
@@ -105,11 +121,72 @@ class _LoginPageState extends State<LoginPage> {
                         height: 45,
                         margin: EdgeInsets.symmetric(horizontal: 65),
                         decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(50),
+                            borderRadius: BorderRadius.circular(80),
                             color: Colors.blue[700]
                         ),
-                        child: Center(
+                        child: RaisedButton(
                           child: Text("Login", style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.bold ),),
+                          color: Theme.of(context).primaryColor,
+                            onPressed: () async {
+                              setState(() {
+                                _isLoading= true;
+                              });
+                              final login = Login(
+                                email: _emailController.text,
+                                password: _passwordController.text,
+                              );
+                              final result = await service.loginEmail(login);
+                              setState(() {
+                                _isLoading= true;
+                              });
+                              final title = 'Done';
+                              final text = result.error ? (result.errorMessage ?? 'An error occurred' ): 'Login successful';
+                              if(text=='Login successful') {
+                                showDialog(
+                                    context: context,
+                                    builder: (_) => AlertDialog(
+                                      title: Text(title),
+                                      content: Text(text),
+                                      actions: <Widget>[
+                                        FlatButton(
+                                          child: Text('Ok'),
+                                          onPressed: () {
+                                            Navigator.of(context)
+                                                .push(MaterialPageRoute(builder: (__) => Homepage(email: _emailController.text,)));
+                                          },
+                                        )
+                                      ],
+                                    )
+                                )
+                                    .then((data) {
+                                  if (!result.error) {
+                                    Navigator.of(context).pop();
+                                  }
+                                });
+                              } //end if
+                              else {
+                                showDialog(
+                                    context: context,
+                                    builder: (_) => AlertDialog(
+                                      title: Text(title),
+                                      content: Text(text),
+                                      actions: <Widget>[
+                                        FlatButton(
+                                          child: Text('Ok'),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        )
+                                      ],
+                                    )
+                                )
+                                    .then((data) {
+                                  if (!result.error) {
+                                    Navigator.of(context).pop();
+                                  }
+                                });
+                              } //end else
+                            }
                         ),
                       ),
                       SizedBox(height: 40,),

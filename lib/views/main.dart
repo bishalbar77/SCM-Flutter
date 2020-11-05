@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_session/flutter_session.dart';
 import 'package:get_it/get_it.dart';
+import 'package:scm/models/User.dart';
 import 'package:scm/services/JobSheetService.dart';
+import 'package:scm/views/ViewJobsheet.dart';
 import 'package:scm/views/addJobsheet.dart';
 import 'package:scm/views/list_jobsheet.dart';
+import 'package:scm/views/login.dart';
 
 void setupLocator() {
   GetIt.I.registerLazySingleton(() => JobSheetService());
 }
+final page = LoginPage();
 
 void main() {
   setupLocator();
@@ -21,14 +26,68 @@ class MyApp extends StatelessWidget {
 
         primarySwatch: Colors.blue,
       ),
-      home: Homepage(),
+      home: page,
     );
   }
 }
 
-class Homepage extends StatelessWidget {
+class Homepage extends StatefulWidget {
+
+  final String email;
+  Homepage({
+    this.email
+  });
+
+
+  @override
+  _HomepageState createState() => _HomepageState();
+}
+class _HomepageState extends State<Homepage> {
+
+  JobSheetService get service =>  GetIt.I<JobSheetService>();
+  String errorMesaage;
+  User user = new User();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _idController = TextEditingController();
+
+  bool _isLoading = false;
+  @override
+  void initState() {
+    // checkSession();
+    super.initState();
+    setState(() {
+      _isLoading = true;
+    });
+    service.userData(widget.email)
+        .then((response) {
+      setState(() {
+        _isLoading = false;
+      });
+      if(response.error) {
+        errorMesaage = response.errorMessage ?? 'JOBSHEET not fetched';
+      }
+      user = response.data;
+      _idController.text = user.ID.toString();
+      _nameController.text = user.name;
+      _emailController.text = user.email;
+    });
+  }
+
+  // checkSession() {
+  //   if(widget.email==null) {
+  //     // Navigator.of(context)
+  //     //     .push(MaterialPageRoute(builder: (__) => LoginPage()));
+  //   }
+  // }
+
+
+
   @override
   Widget build(BuildContext context) {
+      // if (_isLoading) {
+      //   return CircularProgressIndicator();
+      // }
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
@@ -46,8 +105,8 @@ class Homepage extends StatelessWidget {
           children: <Widget>[
             // Drawer header
             UserAccountsDrawerHeader(
-              accountName: Text('Demo User'),
-              accountEmail: Text('admin@admin.com'),
+              accountName: Text(_nameController.text),
+              accountEmail: Text(_emailController.text),
               currentAccountPicture: GestureDetector(
                 child: CircleAvatar(
                   backgroundColor: Colors.grey,
@@ -69,7 +128,7 @@ class Homepage extends StatelessWidget {
             InkWell(
               onTap: (){
                 Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (__) => Joblist()));
+                    .push(MaterialPageRoute(builder: (__) => ViewJobsheet()));
               },
               child: ListTile(
                 title: Text('Jobsheet'),
@@ -84,7 +143,10 @@ class Homepage extends StatelessWidget {
               ),
             ),
             InkWell(
-              onTap: (){},
+              onTap: (){
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (__) => Joblist()));
+              },
               child: ListTile(
                 title: Text('Manage Jobsheet'),
                 leading: Icon(Icons.add_shopping_cart, color: Colors.blueAccent,),
@@ -108,7 +170,10 @@ class Homepage extends StatelessWidget {
               ),
             ),
             InkWell(
-              onTap: (){},
+              onTap: (){
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (__) => LoginPage()));
+              },
               child: ListTile(
                 title: Text('Logout'),
                 leading: Icon(Icons.subdirectory_arrow_right,color: Colors.black,),

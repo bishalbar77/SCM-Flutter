@@ -47,7 +47,10 @@ class _JobListState extends State<Joblist>
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context)
-              .push(MaterialPageRoute(builder: (__) => AddJobsheet()));
+              .push(MaterialPageRoute(builder: (__) => AddJobsheet()))
+              .then((_) {
+                _fetchJobs();
+          });
         },
         child: Icon(Icons.add),
       ),
@@ -73,7 +76,6 @@ class _JobListState extends State<Joblist>
                         context: context,
                         builder: (_) => CloseJobsheet()
                     );
-                    // print(result);
                     return(result);
                   },
                   background: Container(
@@ -86,7 +88,7 @@ class _JobListState extends State<Joblist>
                     subtitle: Text('Last managed on ${_apiResponse.data[index].job_date}'),
                     onTap: () {
                       Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (__) => ManageJobsheet(jobsheetNumber: _apiResponse.data[index].jobsheetNumber)));
+                          .push(MaterialPageRoute(builder: (__) => ManageJobsheet(ID: _apiResponse.data[index].ID)));
                     },
                   ),
                 );

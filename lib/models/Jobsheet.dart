@@ -1,5 +1,5 @@
 class Jobsheet {
-  String ID;
+  int ID;
   String jobsheetNumber;
   String job_date;
   String job_status;
@@ -17,7 +17,7 @@ class Jobsheet {
 
   factory Jobsheet.fromJson(Map<String, dynamic> item) {
     return Jobsheet(
-        ID: "5",
+        ID: item['id'],
         jobsheetNumber: item['job_number'],
         job_date: item['job_date'],
         job_status: item['job_status'],
