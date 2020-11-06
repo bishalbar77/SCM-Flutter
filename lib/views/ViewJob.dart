@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:scm/models/Job.dart';
 import 'package:scm/models/ProductInfo.dart';
 import 'package:scm/services/JobSheetService.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ViewJob extends StatefulWidget {
 
@@ -15,6 +16,7 @@ class ViewJob extends StatefulWidget {
 }
 class _ViewJobState extends State<ViewJob>
 {
+
   // bool get isEditing => widget.ID != null;
   JobSheetService get service =>  GetIt.I<JobSheetService>();
   JobSheetService get service2 =>  GetIt.I<JobSheetService>();
@@ -63,167 +65,116 @@ class _ViewJobState extends State<ViewJob>
     });
   }
 
-
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Scaffold(
-  //     appBar: AppBar(title: Text('Manage Jobsheet' ),),
-  //     body: Padding(
-  //       padding: const EdgeInsets.all(12.0),
-  //       child: _isLoading ? CircularProgressIndicator() :Column(
-  //         children: [
-  //           TextField(
-  //             controller: _titleController,
-  //             decoration: InputDecoration(border: OutlineInputBorder(),
-  //                 hintText: 'JobSheet Number',
-  //                 labelText: 'JobSheet Number'
-  //             ),
-  //           ),
-  //           Container(height: 8),
-  //           TextField(
-  //             controller: _statusController,
-  //             decoration: InputDecoration(border: OutlineInputBorder(),
-  //                 hintText: 'Job Status',
-  //                 labelText: 'Job Status'
-  //             ),
-  //           ),
-  //           Container(height: 18),
-  //           SizedBox(
-  //             width: double.infinity,
-  //             height: 35,
-  //             child: RaisedButton(
-  //               child: Text('Submit',style: TextStyle(color: Colors.white),),
-  //               color: Theme.of(context).primaryColor,
-  //               onPressed: () async {
-  //                 setState(() {
-  //                   _isLoading= true;
-  //                 });
-  //                 final job = JobStatusUpdate(
-  //                   ID : _idController.text,
-  //                   jobsheetNumber: _titleController.text,
-  //                   job_status: _statusController.text,
-  //                 );
-  //                 final result = await service.manageJob(job);
-  //                 setState(() {
-  //                   _isLoading= true;
-  //                 });
-  //                 final title = 'Done';
-  //                 final text = result.error ? (result.errorMessage ?? 'An error occurred' ): 'Jobsheet Updated';
-  //                 showDialog(
-  //                   context: context,
-  //                   builder: (_) => AlertDialog(
-  //                     title: Text(title),
-  //                     content: Text(text),
-  //                     actions: <Widget>[
-  //                       FlatButton(
-  //                         child: Text('Ok'),
-  //                         onPressed: () {
-  //                         Navigator.of(context).pop();
-  //                         },
-  //                       )
-  //                     ],
-  //                   )
-  //                 )
-  //                 .then((data) {
-  //                   if (result.data) {
-  //                     Navigator.of(context).pop();
-  //                   }
-  //                 });
-  //               }
-  //             ),
-  //           )
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
-
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('$_titleController.text'),
-        ),
-        body: ListView.builder(
-          itemCount: 3,
-          itemBuilder: (BuildContext context, int index) => EntryItem(
-            data[index],
+    return Container(
+        child: Card(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0)
+              ),
+              ExpansionTile(
+                title: Text("LOGIN FORM"),
+                trailing: Icon(FontAwesomeIcons.signInAlt),
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'username',
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Password',
+                      ),
+                    ),
+                  ),
+                  RaisedButton(
+                    textColor: Colors.white,
+                    color: Colors.blue,
+                    onPressed: () {
+                    },
+                    child: Text("Log-In"),
+                  )
+                ],
+              ),
+              Padding(
+                  padding: const EdgeInsets.all(8.0)
+              ),
+              ExpansionTile(
+                title: Text("LOGIN FORM"),
+                trailing: Icon(FontAwesomeIcons.signInAlt),
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'username',
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Password',
+                      ),
+                    ),
+                  ),
+                  RaisedButton(
+                    textColor: Colors.white,
+                    color: Colors.blue,
+                    onPressed: () {
+                    },
+                    child: Text("Log-In"),
+                  )
+                ],
+              ),
+              Padding(
+                  padding: const EdgeInsets.all(8.0)
+              ),
+              ExpansionTile(
+                title: Text("LOGIN FORM"),
+                trailing: Icon(FontAwesomeIcons.signInAlt),
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'username',
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: TextField(
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Password',
+                      ),
+                    ),
+                  ),
+                  RaisedButton(
+                    textColor: Colors.white,
+                    color: Colors.blue,
+                    onPressed: () {
+                    },
+                    child: Text("Log-In"),
+                  )
+                ],
+              ),
+            ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class Entry {
-  final String title;
-  final List<Entry>
-  children; // Since this is an expansion list ...children can be another list of entries
-  Entry(this.title, [this.children = const <Entry>[]]);
-}
-
-// This is the entire multi-level list displayed by this app
-final List<Entry> data = <Entry>[
-  Entry(
-    'Service',
-    <Entry>[
-      Entry(
-        'Section A0',
-        <Entry>[
-          Entry('Item A0.1'),
-          Entry('Item A0.2'),
-          Entry('Item A0.3'),
-        ],
-      ),
-      Entry('Section A1'),
-      Entry('Section A2'),
-    ],
-  ),
-  // Second Row
-  Entry('Product Information', <Entry>[
-    Entry('Section B0'),
-    Entry('Section B1'),
-  ]),
-  Entry(
-    'Service Status',
-    <Entry>[
-      Entry('Section C0'),
-      Entry('Section C1'),
-      Entry(
-        'Section C2',
-        <Entry>[
-          Entry('Item C2.0'),
-          Entry('Item C2.1'),
-          Entry('Item C2.2'),
-          Entry('Item C2.3'),
-        ],
-      )
-    ],
-  ),
-];
-
-// Create the Widget for the row
-class EntryItem extends StatelessWidget {
-  const EntryItem(this.entry);
-  final Entry entry;
-
-  // This function recursively creates the multi-level list rows.
-  Widget _buildTiles(Entry root) {
-    if (root.children.isEmpty) {
-      return ListTile(
-        title: Text(root.title),
-      );
-    }
-    return ExpansionTile(
-      key: PageStorageKey<Entry>(root),
-      title: Text(root.title),
-      children: root.children.map<Widget>(_buildTiles).toList(),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _buildTiles(entry);
+        ));
   }
 }

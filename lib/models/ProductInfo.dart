@@ -31,6 +31,7 @@ class ProductInfo {
     this.added_date
   });
 
+
   factory ProductInfo.fromJson(Map<String, dynamic> jsondata) {
     return ProductInfo(
         jobId: jsondata['jobId'],

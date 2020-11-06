@@ -103,6 +103,9 @@ class _LoginPageState extends State<LoginPage> {
 
                               ),
                               child: TextField(
+                                enableSuggestions: false,
+                                autocorrect: false,
+                                obscureText: true,
                                 controller: _passwordController,
                                 decoration: InputDecoration(
                                   hintText: "Password",

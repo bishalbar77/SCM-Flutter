@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_session/flutter_session.dart';
 import 'package:get_it/get_it.dart';
+import 'package:getflutter/components/alert/gf_alert.dart';
+import 'package:getflutter/components/button/gf_button.dart';
+import 'package:getflutter/components/floating_widget/gf_floating_widget.dart';
+import 'package:getflutter/components/toast/gf_toast.dart';
+import 'package:getflutter/position/gf_position.dart';
+import 'package:getflutter/shape/gf_button_shape.dart';
 import 'package:scm/models/User.dart';
 import 'package:scm/services/JobSheetService.dart';
 import 'package:scm/views/ViewJobsheet.dart';
@@ -182,6 +188,29 @@ class _HomepageState extends State<Homepage> {
           ],
         ),
       ),
+        body:Padding(
+          padding: const EdgeInsets.fromLTRB(0, 20, 0, 20),
+          child: GFFloatingWidget(
+              child:GFAlert(
+                title: 'Jobsheets',
+                content: 'Tap to view all the jobsheet.',
+                bottombar: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    GFButton(
+                      onPressed: (){
+                        Navigator.of(context)
+                            .push(MaterialPageRoute(builder: (__) => ViewJobsheet()));
+                      },
+                      shape: GFButtonShape.pills,
+                      icon: Icon(Icons.keyboard_arrow_right, color: Colors.white10,),
+                      position: GFPosition.end,
+                      text: 'Check',)
+                  ],
+                ),
+              )
+          ),
+        )
     );
   }
 }

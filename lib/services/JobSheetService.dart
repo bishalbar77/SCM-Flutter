@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_session/flutter_session.dart';
 import 'package:http/http.dart' as http;
+import 'package:scm/models/AddNewJobsheet.dart';
 import 'package:scm/models/ApiResponse.dart';
 import 'package:scm/models/Job.dart';
 import 'package:scm/models/JobStatusUpdate.dart';
@@ -62,6 +63,18 @@ class JobSheetService {
 
   Future<ApiResponse<bool>> manageJob(JobStatusUpdate item) {
     return http.post(API + '/change_job_status', headers: headers, body: json.encode(item.toJson())).then((data){
+      if(data.statusCode==200) {
+        {
+          return ApiResponse<bool>( data: true );
+        }
+      }
+      return ApiResponse<bool>(error: true, errorMessage: 'An error occurred' );
+    })
+        .catchError((_) => ApiResponse<bool>(error: true, errorMessage: 'No internet connection found' ));
+  }
+
+  Future<ApiResponse<bool>> addJob(AddNewJobsheet item) {
+    return http.post(API + '/postjobsheet', headers: headers, body: json.encode(item.toJson())).then((data){
       if(data.statusCode==200) {
         {
           return ApiResponse<bool>( data: true );
