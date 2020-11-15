@@ -3,10 +3,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:scm/models/AddNewJobsheet.dart';
+import 'package:scm/models/ApiResponse.dart';
+import 'package:scm/models/User.dart';
 import 'package:scm/services/JobSheetService.dart';
 
-class AddJobsheet extends StatelessWidget {
+class AddJobsheet extends StatefulWidget {
 
+  final String email;
+  AddJobsheet({
+    this.email
+  });
+
+  _AddJobsheetState createState() => _AddJobsheetState();
+}
+class _AddJobsheetState extends State<AddJobsheet> {
   List<String> servicetype = [
     "Carry In",
     "Pickup",
@@ -14,16 +24,35 @@ class AddJobsheet extends StatelessWidget {
   ];
 
   List<String> warranty = [
-    "Warranty",   "Non-warranty",   "Return",
+    "Warranty", "Non-warranty", "Return",
   ];
 
-  JobSheetService get service =>  GetIt.I<JobSheetService>();
+  JobSheetService get service => GetIt.I<JobSheetService>();
+
+  JobSheetService get service2 => GetIt.I<JobSheetService>();
+
+  // Model
+  User user = new User();
+  TextEditingController _id = TextEditingController();
+  ApiResponse<User> _apiResponse2;
+
+  void initState() {
+    _fetchDetails();
+  }
+
+  _fetchDetails() async {
+    // ignore: missing_return
+    _apiResponse2 = await service2.userData(widget.email).then((response) {
+      user = response.data;
+      _id.text = user.ID.toString();
+    });
+  }
 
   TextEditingController warrantystatus = new TextEditingController();
   TextEditingController selectservice = new TextEditingController();
   TextEditingController first_name = new TextEditingController();
   TextEditingController last_name = new TextEditingController();
-  TextEditingController email = new TextEditingController();
+  TextEditingController _email = new TextEditingController();
   TextEditingController phone = new TextEditingController();
   TextEditingController jb_no = new TextEditingController();
   TextEditingController jb_date = new TextEditingController();
@@ -48,7 +77,7 @@ class AddJobsheet extends StatelessWidget {
       appBar: AppBar(title: Text('Add Jobsheet Details'),),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
-        child: _isLoading ? CircularProgressIndicator(): ListView(
+        child: _isLoading ? CircularProgressIndicator() : ListView(
           children: [
             Container(height: 16),
             Text(
@@ -77,7 +106,7 @@ class AddJobsheet extends StatelessWidget {
             ),
             Container(height: 8),
             TextField(
-              controller: email,
+              controller: _email,
               decoration: InputDecoration(border: OutlineInputBorder(),
                   hintText: 'Customer Email',
                   labelText: 'Customer Email'
@@ -92,7 +121,7 @@ class AddJobsheet extends StatelessWidget {
               ),
             ),
             Container(height: 8),
-            SizedBox(height: 10,width: 0),
+            SizedBox(height: 10, width: 0),
             DropDownField(
               textStyle: const TextStyle(fontWeight: FontWeight.normal,
                   color: Colors.black,
@@ -121,8 +150,8 @@ class AddJobsheet extends StatelessWidget {
             TextField(
               controller: jb_date,
               decoration: InputDecoration(border: OutlineInputBorder(),
-                  hintText: 'Jobsheet Date',
-                  labelText: 'Jobsheet Date',
+                hintText: 'Jobsheet Date',
+                labelText: 'Jobsheet Date',
               ),
             ),
             Container(height: 16),
@@ -204,7 +233,7 @@ class AddJobsheet extends StatelessWidget {
                   color: Colors.black38,
                   fontSize: 15.0),
               textStyle: const TextStyle(fontWeight: FontWeight.normal,
-                  color: Colors.black38,
+                  color: Colors.black,
                   fontSize: 15.0),
               controller: warrantystatus,
               hintText: "Select Warranty Status",
@@ -264,19 +293,19 @@ class AddJobsheet extends StatelessWidget {
               width: double.infinity,
               height: 35,
               child: RaisedButton(
-                child: Text('Submit', style: TextStyle(color: Colors.white),),
-                color: Theme
-                    .of(context)
-                    .primaryColor,
+                  child: Text('Submit', style: TextStyle(color: Colors.white),),
+                  color: Theme
+                      .of(context)
+                      .primaryColor,
                   onPressed: () async {
                     setState(() {
-                      _isLoading= true;
+                      _isLoading = true;
                     });
                     final job = AddNewJobsheet(
-                      id : "3",
+                      id: _id.text,
                       first_name: first_name.text,
                       last_name: last_name.text,
-                      email: email.text,
+                      email: _email.text,
                       phone: phone.text,
                       pd_type: pd_type.text,
                       jb_no: jb_no.text,
@@ -294,26 +323,29 @@ class AddJobsheet extends StatelessWidget {
                       selectservice: selectservice.text,
                       warrantystatus: warrantystatus.text,
                     );
+                    print(_id.text);
                     final result = await service.addJob(job);
                     setState(() {
-                      _isLoading= true;
+                      _isLoading = true;
                     });
                     final title = 'Done';
-                    final text = result.error ? (result.errorMessage ?? 'An error occurred' ): 'Jobsheet Updated';
+                    final text = result.error ? (result.errorMessage ??
+                        'An error occurred') : 'Jobsheet Updated';
                     showDialog(
                         context: context,
-                        builder: (_) => AlertDialog(
-                          title: Text(title),
-                          content: Text(text),
-                          actions: <Widget>[
-                            FlatButton(
-                              child: Text('Ok'),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
+                        builder: (_) =>
+                            AlertDialog(
+                              title: Text(title),
+                              content: Text(text),
+                              actions: <Widget>[
+                                FlatButton(
+                                  child: Text('Ok'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                )
+                              ],
                             )
-                          ],
-                        )
                     )
                         .then((data) {
                       if (result.data) {
@@ -328,6 +360,4 @@ class AddJobsheet extends StatelessWidget {
       ),
     );
   }
-
-  void setState(Null Function() param0) {}
 }

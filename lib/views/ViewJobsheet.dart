@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:scm/models/ApiResponse.dart';
 import 'package:scm/models/Jobsheet.dart';
+import 'package:scm/models/User.dart';
 import 'package:scm/services/JobSheetService.dart';
 import 'package:scm/views/CloseJobsheet.dart';
 import 'package:scm/views/ViewJob.dart';
@@ -10,18 +11,28 @@ import 'addJobsheet.dart';
 
 class ViewJobsheet extends StatefulWidget {
 
+  final String email;
+  ViewJobsheet({
+    this.email
+  });
+
   _ViewJobsheetState createState() => _ViewJobsheetState();
 }
 class _ViewJobsheetState extends State<ViewJobsheet>
 {
 
   JobSheetService get service =>  GetIt.I<JobSheetService>();
+  JobSheetService get service2 =>  GetIt.I<JobSheetService>();
+  // Model
+  User user = new User();
+  TextEditingController _id = TextEditingController();
   // Model
 
   String formatTime(DateTime dateTime) {
     return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
   }
   ApiResponse<List<Jobsheet>> _apiResponse;
+  ApiResponse<User> _apiResponse2;
   bool _isLoading = false;
 
   @override
@@ -34,8 +45,12 @@ class _ViewJobsheetState extends State<ViewJobsheet>
     setState(() {
       _isLoading = true;
     });
-
-    _apiResponse = await service.getJobSheet();
+    // ignore: missing_return
+    _apiResponse2 = await service2.userData(widget.email).then((response) {
+      user = response.data;
+      _id.text = user.ID.toString();
+    });
+    _apiResponse = await service.getJobSheet(_id.text);
     setState(() {
       _isLoading =false;
     });
@@ -48,7 +63,7 @@ class _ViewJobsheetState extends State<ViewJobsheet>
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             Navigator.of(context)
-                .push(MaterialPageRoute(builder: (__) => AddJobsheet()))
+                .push(MaterialPageRoute(builder: (__) => AddJobsheet(email: widget.email,)))
                 .then((_) {
               _fetchJobs();
             });
@@ -58,7 +73,14 @@ class _ViewJobsheetState extends State<ViewJobsheet>
         body: Builder(
           builder: (_) {
             if (_isLoading) {
-              return CircularProgressIndicator();
+              return  new Container(
+                color: Colors.white70.withOpacity(0.3),
+                width: MediaQuery.of(context).size.width,//70.0,
+                height: MediaQuery.of(context).size.height, //70.0,
+                child: new Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: new Center(child: new CircularProgressIndicator())),
+              );
             }
             if(_apiResponse?.error) {
               return Center(child: Text(_apiResponse.errorMessage));

@@ -1,3 +1,4 @@
+import 'package:dropdownfield/dropdownfield.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:scm/models/Job.dart';
@@ -26,9 +27,23 @@ class _ViewJobState extends State<ViewJob>
   Job job = new Job();
   ProductInfo productInfo = new ProductInfo();
 
-  TextEditingController _titleController = TextEditingController();
-  TextEditingController _statusController = TextEditingController();
-  TextEditingController _idController = TextEditingController();
+  TextEditingController servicetype = TextEditingController();
+  TextEditingController job_no = TextEditingController();
+  TextEditingController job_date = TextEditingController();
+  TextEditingController job_status = TextEditingController();
+
+
+  TextEditingController pd_type = TextEditingController();
+  TextEditingController brand = TextEditingController();
+  TextEditingController model_name = TextEditingController();
+  TextEditingController model_no = TextEditingController();
+  TextEditingController device_config = TextEditingController();
+  TextEditingController password = TextEditingController();
+  TextEditingController sr_no = TextEditingController();
+  TextEditingController war_staus = TextEditingController();
+  TextEditingController fault_cust = TextEditingController();
+  TextEditingController phy_status = TextEditingController();
+  TextEditingController remarks = TextEditingController();
 
   bool _isLoading = false;
   @override
@@ -46,12 +61,13 @@ class _ViewJobState extends State<ViewJob>
         errorMesaage = response.errorMessage ?? 'JOBSHEET not fetched';
       }
       job = response.data;
-      _idController.text=job.ID.toString();
-      _titleController.text = job.jobsheetNumber;
-      _statusController.text = job.job_status;
+      job_no.text = job.jobsheetNumber;
+      servicetype.text = job.job_type;
+      job_status.text = job.job_status;
+      job_date.text = job.job_date;
     });
+    product();
   }
-
   void product() {
     service2.getproduct(widget.ID)
         .then((response){
@@ -59,122 +75,166 @@ class _ViewJobState extends State<ViewJob>
         errorMesaage = response.errorMessage ?? 'JOBSHEET not fetched';
       }
       productInfo = response.data;
-      _idController.text=productInfo.jobId.toString();
-      // _titleController.text = job.jobsheetNumber;
-      // _statusController.text = job.job_status;
+      pd_type.text = productInfo.pd_type;
+      brand.text = productInfo.brand;
+      model_name.text = productInfo.model_name;
+      model_no.text = productInfo.model_no;
+      device_config.text = productInfo.device_config;
+      password.text = productInfo.password;
+      sr_no.text = productInfo.sr_no;
+      war_staus.text = productInfo.war_staus;
+      fault_cust.text = productInfo.fault_cust;
+      phy_status.text = productInfo.phy_status;
+      remarks.text = productInfo.remarks;
     });
   }
 
   Widget build(BuildContext context) {
-    return Container(
-        child: Card(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0)
-              ),
-              ExpansionTile(
-                title: Text("LOGIN FORM"),
-                trailing: Icon(FontAwesomeIcons.signInAlt),
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'username',
-                      ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(job_no.text),
+      ),
+      body: Container(
+          child: Card(
+            child: ListView(
+              children: <Widget>[
+                Padding(
+                    padding: const EdgeInsets.all(8.0)
+                ),
+                ExpansionTile(
+                  title: Text("Service"),
+                  trailing: Icon(FontAwesomeIcons.angleDoubleDown),
+                  children: <Widget>[
+                    Container(height: 8),
+                    Text(
+                      'Service Type:  ${servicetype.text}',
+                      textAlign: TextAlign.right,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontWeight: FontWeight.normal,fontSize: 15),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Password',
-                      ),
+                    Container(height: 8),
+                    Text(
+                      'Jobsheet Number:  ${job_no.text}',
+                      textAlign: TextAlign.left,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontWeight: FontWeight.normal,fontSize: 15),
                     ),
-                  ),
-                  RaisedButton(
-                    textColor: Colors.white,
-                    color: Colors.blue,
-                    onPressed: () {
-                    },
-                    child: Text("Log-In"),
-                  )
-                ],
-              ),
-              Padding(
-                  padding: const EdgeInsets.all(8.0)
-              ),
-              ExpansionTile(
-                title: Text("LOGIN FORM"),
-                trailing: Icon(FontAwesomeIcons.signInAlt),
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'username',
-                      ),
+                    Container(height: 8),
+                    Text(
+                      'Jobsheet Date:  ${job_date.text}',
+                      textAlign: TextAlign.left,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontWeight: FontWeight.normal,fontSize: 15),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Password',
-                      ),
+                    Container(height: 8),
+                    Text(
+                      'Jobsheet Status:  ${job_status.text}',
+                      textAlign: TextAlign.left,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontWeight: FontWeight.normal,fontSize: 15),
                     ),
-                  ),
-                  RaisedButton(
-                    textColor: Colors.white,
-                    color: Colors.blue,
-                    onPressed: () {
-                    },
-                    child: Text("Log-In"),
-                  )
-                ],
-              ),
-              Padding(
-                  padding: const EdgeInsets.all(8.0)
-              ),
-              ExpansionTile(
-                title: Text("LOGIN FORM"),
-                trailing: Icon(FontAwesomeIcons.signInAlt),
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'username',
-                      ),
+                    Container(height: 18),
+                  ],
+                ),
+                Padding(
+                    padding: const EdgeInsets.all(8.0)
+                ),
+                ExpansionTile(
+                  title: Text("Product Information"),
+                  trailing: Icon(FontAwesomeIcons.angleDoubleDown),
+                  children: <Widget>[
+                    Container(height: 8),
+                    Text(
+                      'Product Type:  ${pd_type.text}',
+                      textAlign: TextAlign.right,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontWeight: FontWeight.normal,fontSize: 15),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Password',
-                      ),
+                    Container(height: 8),
+                    Text(
+                      'Brand:  ${brand.text}',
+                      textAlign: TextAlign.left,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontWeight: FontWeight.normal,fontSize: 15),
                     ),
-                  ),
-                  RaisedButton(
-                    textColor: Colors.white,
-                    color: Colors.blue,
-                    onPressed: () {
-                    },
-                    child: Text("Log-In"),
-                  )
-                ],
-              ),
-            ],
-          ),
-        ));
+                    Container(height: 8),
+                    Text(
+                      'Model Name:  ${model_name.text}',
+                      textAlign: TextAlign.left,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontWeight: FontWeight.normal,fontSize: 15),
+                    ),
+                    Container(height: 8),
+                    Text(
+                      'Model Number:  ${model_no.text}',
+                      textAlign: TextAlign.left,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontWeight: FontWeight.normal,fontSize: 15),
+                    ),
+                    Container(height: 8),
+                    Text(
+                      'Service Type:  ${servicetype.text}',
+                      textAlign: TextAlign.right,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontWeight: FontWeight.normal,fontSize: 15),
+                    ),
+                    Container(height: 8),
+                    Text(
+                      'Serial Number:  ${sr_no.text}',
+                      textAlign: TextAlign.left,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontWeight: FontWeight.normal,fontSize: 15),
+                    ),
+                    Container(height: 8),
+                    Text(
+                      'Device Configuration:  ${device_config.text}',
+                      textAlign: TextAlign.left,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontWeight: FontWeight.normal,fontSize: 15),
+                    ),
+                    Container(height: 8),
+                    Text(
+                      'Password:  ${password.text}',
+                      textAlign: TextAlign.left,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontWeight: FontWeight.normal,fontSize: 15),
+                    ),Container(height: 8),
+                    Text(
+                      'Warranty Status:  ${war_staus.text}',
+                      textAlign: TextAlign.left,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontWeight: FontWeight.normal,fontSize: 15),
+                    ),
+                    Container(height: 8),
+                    Text(
+                      'Physical Status:  ${phy_status.text}',
+                      textAlign: TextAlign.left,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontWeight: FontWeight.normal,fontSize: 15),
+                    ),
+                    Container(height: 8),
+                    Text(
+                      'Remarks:  ${remarks.text}',
+                      textAlign: TextAlign.left,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontWeight: FontWeight.normal,fontSize: 15),
+                    ),
+                    Container(height: 18),
+                  ],
+                ),
+                Padding(
+                    padding: const EdgeInsets.all(8.0)
+                ),
+                ExpansionTile(
+                  title: Text("Service Status"),
+                  trailing: Icon(FontAwesomeIcons.angleDoubleDown),
+                  children: <Widget>[
+                    Container(height: 18),
+                  ],
+                ),
+              ],
+            ),
+          )),
+    );
   }
 }

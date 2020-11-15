@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:scm/models/ApiResponse.dart';
 import 'package:scm/models/Jobsheet.dart';
+import 'package:scm/models/User.dart';
 import 'package:scm/services/JobSheetService.dart';
 import 'package:scm/views/CloseJobsheet.dart';
 import 'ManageJobsheet.dart';
@@ -9,20 +10,29 @@ import 'addJobsheet.dart';
 
 class Joblist extends StatefulWidget {
 
+  final String email;
+  Joblist({
+    this.email
+  });
+
   _JobListState createState() => _JobListState();
 }
 class _JobListState extends State<Joblist>
 {
 
   JobSheetService get service =>  GetIt.I<JobSheetService>();
+  JobSheetService get service2 =>  GetIt.I<JobSheetService>();
   // Model
+  User user = new User();
+  TextEditingController _id = TextEditingController();
 
   String formatTime(DateTime dateTime) {
     return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
   }
   ApiResponse<List<Jobsheet>> _apiResponse;
+  ApiResponse<User> _apiResponse2;
   bool _isLoading = false;
-  
+
 @override
   void initState() {
     _fetchJobs();
@@ -33,12 +43,18 @@ class _JobListState extends State<Joblist>
    setState(() {
      _isLoading = true;
    });
-
-   _apiResponse = await service.getJobSheet();
+   // ignore: missing_return
+   _apiResponse2 = await service2.userData(widget.email).then((response) {
+     user = response.data;
+     _id.text = user.ID.toString();
+   });
+   _apiResponse = await service.getJobSheet(_id.text);
    setState(() {
      _isLoading =false;
    });
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +63,7 @@ class _JobListState extends State<Joblist>
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context)
-              .push(MaterialPageRoute(builder: (__) => AddJobsheet()))
+              .push(MaterialPageRoute(builder: (__) => AddJobsheet(email: widget.email,)))
               .then((_) {
                 _fetchJobs();
           });
@@ -57,7 +73,14 @@ class _JobListState extends State<Joblist>
       body: Builder(
         builder: (_) {
           if (_isLoading) {
-            return CircularProgressIndicator();
+            return  new Container(
+              color: Colors.white70.withOpacity(0.3),
+              width: MediaQuery.of(context).size.width,//70.0,
+              height: MediaQuery.of(context).size.height, //70.0,
+              child: new Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: new Center(child: new CircularProgressIndicator())),
+            );
           }
           if(_apiResponse?.error) {
             return Center(child: Text(_apiResponse.errorMessage));

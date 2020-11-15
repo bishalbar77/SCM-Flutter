@@ -2,28 +2,32 @@ import 'dart:convert';
 import 'package:flutter_session/flutter_session.dart';
 import 'package:http/http.dart' as http;
 import 'package:scm/models/AddNewJobsheet.dart';
+import 'package:scm/models/Additional.dart';
 import 'package:scm/models/ApiResponse.dart';
 import 'package:scm/models/Job.dart';
 import 'package:scm/models/JobStatusUpdate.dart';
 import 'package:scm/models/Jobsheet.dart';
 import 'package:scm/models/Login.dart';
 import 'package:scm/models/ProductInfo.dart';
+import 'package:scm/models/ServiceStatusUpdate.dart';
+import 'package:scm/models/SignUp.dart';
 import 'package:scm/models/User.dart';
 import 'package:scm/views/ManageJobsheet.dart';
-import 'package:scm/views/main.dart';
+import 'file:///C:/Users/Bishal/AndroidStudioProjects/scm/lib/main.dart';
 
-Map request = {
-  'id': 3,
-};
+
 
 class JobSheetService {
 
-  static const API = 'http://asquareservicepro.com/api';
+  static const API = 'http://13.232.48.42/api';
   static const headers = {
      'Content-Type': 'application/json'
   };
-  String body = json.encode(request);
-  Future<ApiResponse<List<Jobsheet>>> getJobSheet() {
+  Future<ApiResponse<List<Jobsheet>>> getJobSheet(String id) {
+    Map request = {
+      'id': id,
+    };
+    String body = json.encode(request);
     return http.post(API + '/getjobsheet', headers: headers, body: body).then((data){
       if(data.statusCode==200) {
         final jsonData = json.decode(data.body);
@@ -73,6 +77,30 @@ class JobSheetService {
         .catchError((_) => ApiResponse<bool>(error: true, errorMessage: 'No internet connection found' ));
   }
 
+  Future<ApiResponse<bool>> manageStatus(ServiceStatusUpdate item) {
+    return http.post(API + '/change_service_status', headers: headers, body: json.encode(item.toJson())).then((data){
+      if(data.statusCode==200) {
+        {
+          return ApiResponse<bool>( data: true );
+        }
+      }
+      return ApiResponse<bool>(error: true, errorMessage: 'An error occurred' );
+    })
+        .catchError((_) => ApiResponse<bool>(error: true, errorMessage: 'No internet connection found' ));
+  }
+
+  Future<ApiResponse<bool>> addPro(Additional item) {
+    return http.post(API + '/recieveProducts', headers: headers, body: json.encode(item.toJson())).then((data){
+      if(data.statusCode==200) {
+        {
+          return ApiResponse<bool>( data: true );
+        }
+      }
+      return ApiResponse<bool>(error: true, errorMessage: 'An error occurred' );
+    })
+        .catchError((_) => ApiResponse<bool>(error: true, errorMessage: 'No internet connection found' ));
+  }
+
   Future<ApiResponse<bool>> addJob(AddNewJobsheet item) {
     return http.post(API + '/postjobsheet', headers: headers, body: json.encode(item.toJson())).then((data){
       if(data.statusCode==200) {
@@ -94,17 +122,28 @@ class JobSheetService {
         await session.set("name", jsonData['name']);
         await session.set("id", jsonData['id']);
         await session.set("email", jsonData['email']);
-        print(session.get('email'));
         return ApiResponse<Login>( data: Login.fromJson(jsonData) );
       }
-      return ApiResponse<Login>(error: true, errorMessage: 'An error occurred');
+      return ApiResponse<Login>(error: true, errorMessage: 'Sorry! Credentials not found.');
     })
         .catchError((_) => ApiResponse<Login>(error: true, errorMessage: 'No internet connection found'));
   }
+
+  Future<ApiResponse<Sign>> signUp(Sign item) {
+    return http.post(API + '/signUp' , headers: headers, body: json.encode(item.toJson())).then((data) async {
+      if(data.statusCode==200)
+      {
+        final jsonData = json.decode(data.body);
+        return ApiResponse<Sign>( data: Sign.fromJson(jsonData) );
+      }
+      return ApiResponse<Sign>(error: true, errorMessage: 'Something went wrong.');
+    })
+        .catchError((_) => ApiResponse<Sign>(error: true, errorMessage: 'No internet connection found'));
+  }
+
   Future<ApiResponse<User>> userData(String userId) {
     return http.get('http://asquareservicepro.com/api/userData/${userId.replaceAll(new RegExp(r"\s+\b|\b\s"), "")}', headers: headers).then((data){
       if(data.statusCode==200) {
-        print(data.statusCode);
         final jsonData = json.decode(data.body);
         return ApiResponse<User>( data: User.fromJson(jsonData) );
       }
