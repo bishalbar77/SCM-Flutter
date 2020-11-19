@@ -54,9 +54,7 @@ class _ViewJobState extends State<ViewJob>
     });
     service.getJob(widget.ID)
         .then((response) {
-      setState(() {
-        _isLoading = false;
-      });
+
       if(response.error) {
         errorMesaage = response.errorMessage ?? 'JOBSHEET not fetched';
       }
@@ -72,8 +70,14 @@ class _ViewJobState extends State<ViewJob>
     service2.getproduct(widget.ID)
         .then((response){
       if(response.error) {
+        setState(() {
+          _isLoading = false;
+        });
         errorMesaage = response.errorMessage ?? 'JOBSHEET not fetched';
       }
+      setState(() {
+        _isLoading = false;
+      });
       productInfo = response.data;
       pd_type.text = productInfo.pd_type;
       brand.text = productInfo.brand;
@@ -90,7 +94,14 @@ class _ViewJobState extends State<ViewJob>
   }
 
   Widget build(BuildContext context) {
-    return Scaffold(
+    return _isLoading ? Container(
+      color: Colors.white70.withOpacity(0.3),
+      width: MediaQuery.of(context).size.width,//70.0,
+      height: MediaQuery.of(context).size.height, //70.0,
+      child: new Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: new Center(child: new CircularProgressIndicator())),
+    ): Scaffold(
       appBar: AppBar(
         title: Text(job_no.text),
       ),
